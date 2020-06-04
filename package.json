@@ -4,7 +4,8 @@
   "description": "NodeJS Chat using Socket",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon src/index.js",
+    "code_style": "standard"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,18 @@
   "bugs": {
     "url": "https://github.com/leaofelipe/socket-chat-webapp/issues"
   },
-  "homepage": "https://github.com/leaofelipe/socket-chat-webapp#readme"
+  "homepage": "https://github.com/leaofelipe/socket-chat-webapp#readme",
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "standard": "^14.3.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run code_style"
+    }
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4"
+  }
 }
