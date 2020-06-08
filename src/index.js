@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const http = require('http')
 const socketio = require('socket.io')
+const { generateMessage } = require('./utils/messages')
 const { HOST, PORT } = process.env
 
 const application = express()
@@ -17,22 +18,21 @@ io.on('connection', socket => {
   console.log('New Socket Connection')
 
   // Send message for only person who connects
-  socket.emit('message', 'Welcome')
+  socket.emit('message', generateMessage('Welcome'))
 
   // Sends to everyone but the connected person who connects
-  socket.broadcast.emit('message', 'A new user has joined!')
+  socket.broadcast.emit('message', generateMessage('A new user has joined!'))
 
   socket.on('sendMessage', (message, delivered) => {
     // Emit for everyone connected
-    io.emit('message', message)
+    io.emit('message', generateMessage(message))
 
     // Confirm to sender if message was delivered
     delivered('Delivered.')
-    console.log(message, 'sent.')
   })
 
   socket.on('disconnect', () => {
-    io.emit('message', 'A user has left!')
+    io.emit('message', generateMessage('A user has left!'))
   })
 })
 

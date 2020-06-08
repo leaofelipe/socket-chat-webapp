@@ -7,9 +7,9 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 
 socket.on('message', message => {
-  console.log(message)
   const html = window.Mustache.render(messageTemplate, {
-    message
+    message: message.text,
+    createdAt: window.moment(message.createdAt).format('h:mm a')
   })
   $messages.insertAdjacentHTML('beforeend', html)
 })
