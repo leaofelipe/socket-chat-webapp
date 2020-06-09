@@ -5,6 +5,7 @@ const $messageFormButton = $messageForm.querySelector("button");
 const $messages = document.querySelector("#messages");
 
 const messageTemplate = document.querySelector("#message-template").innerHTML;
+const sidebarTemplate = document.querySelector("#sidebar-template").innerHTML;
 
 // OPTIONS
 const { username, room } = window.Qs.parse(window.location.search, {
@@ -18,6 +19,15 @@ socket.on("message", (message) => {
     createdAt: window.moment(message.createdAt).format("h:mm a"),
   });
   $messages.insertAdjacentHTML("beforeend", html);
+});
+
+socket.on("roomData", ({ room, users }) => {
+  const html = window.Mustache.render(sidebarTemplate, {
+    room,
+    users,
+  });
+
+  document.querySelector("#sidebar").innerHTML = html;
 });
 
 $messageForm.addEventListener("submit", (e) => {
