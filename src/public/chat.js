@@ -13,6 +13,7 @@ const { username, room } = window.Qs.parse(window.location.search, {
 
 socket.on("message", (message) => {
   const html = window.Mustache.render(messageTemplate, {
+    username: message.username,
     message: message.text,
     createdAt: window.moment(message.createdAt).format("h:mm a"),
   });
@@ -35,4 +36,9 @@ $messageForm.addEventListener("submit", (e) => {
   });
 });
 
-socket.emit("join", { username, room });
+socket.emit("join", { username, room }, (error) => {
+  if (error) {
+    alert(error);
+    window.location.href = "/";
+  }
+});

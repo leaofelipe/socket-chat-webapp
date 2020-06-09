@@ -4,6 +4,12 @@ const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
 const { generateMessage } = require("./utils/messages");
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+} = require("./utils/users");
 const { HOST, PORT } = process.env;
 
 const application = express();
@@ -17,24 +23,43 @@ application.use(express.static(publicDirectoryPath));
 io.on("connection", (socket) => {
   console.log("New Socket Connection");
 
-  socket.on("join", ({ username, room }) => {
-    socket.join(room);
-    socket.emit("message", generateMessage("Welcome"));
+  socket.on("join", (options, res) => {
+    const { error, user } = addUser({ id: socket.id, ...options });
+
+    if (error) {
+      return res(error);
+    }
+
+    socket.join(user.room);
+    socket.emit("message", generateMessage("Admin", "Welcome"));
     socket.broadcast
-      .to(room)
-      .emit("message", generateMessage(`${username} has joined!`));
+      .to(user.room)
+      .emit(
+        "message",
+        generateMessage("Admin", `${user.username} has joined!`)
+      );
+
+    res();
   });
 
   socket.on("sendMessage", (message, delivered) => {
+    const user = getUser(socket.id);
     // Emit for everyone connected
-    io.to("bh").emit("message", generateMessage(message));
+    io.to(user.room).emit("message", generateMessage(user.username, message));
 
     // Confirm to sender if message was delivered
     delivered("Delivered.");
   });
 
   socket.on("disconnect", () => {
-    io.to("bh").emit("message", generateMessage("A user has left!"));
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit(
+        "message",
+        generateMessage("Admin", `${user.username} has left!`)
+      );
+    }
   });
 });
 
