@@ -4,8 +4,7 @@
   "description": "NodeJS Chat using Socket",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "code_style": "standard"
+    "start": "nodemon src/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,13 +18,7 @@
   },
   "homepage": "https://github.com/leaofelipe/socket-chat-webapp#readme",
   "devDependencies": {
-    "husky": "^4.2.5",
     "standard": "^14.3.4"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run code_style"
-    }
   },
   "dependencies": {
     "dotenv": "^8.2.0",
